@@ -2,6 +2,18 @@
 import type { PricingContent } from './pricing';
 
 export const pricingEn: PricingContent = {
+  // Prices in USD: converted from the ruble price list at the CBR rate of 16.10.2026 (1 $ = 83.76 ₽) and rounded.
+  // They don't follow the exchange rate — update here when needed.
+  prices: {
+    currency: 'USD',
+    year: [4200, 6600, 11300],
+    month: [350, 550, 940],
+    support: [180, 300, 480],
+    impl: 2150,
+    rate: 40,
+    quarterStep: 10,
+  },
+
   meta: {
     title: 'Pricing — Umbrella AI',
     description: 'Umbrella AI pricing: the subscription depends only on the number of users, with the whole platform in every tier. Implementation, support and custom development.',
@@ -17,7 +29,7 @@ export const pricingEn: PricingContent = {
     lead: 'Not on a set of modules: every tier includes the whole platform. A user is a person with access to Umbrella; adding one within your tier costs nothing.',
     chips: { platform: 'The whole platform in every tier', impl: ['Implementation', 'fixed'], vat: ['Prices', 'incl. VAT'] },
     ticket: {
-      aria: 'Example: a company with 48 users — the 26–60 tier, ₽ 550,000 a year',
+      aria: 'Example: a company with 48 users — the 26–60 tier, $6,600 a year',
       company: 'Altair LLC',
       companySub: '+ 2 more legal entities in the group',
       avatar: 'A',
@@ -113,7 +125,7 @@ export const pricingEn: PricingContent = {
         'One contact for everything — from an outage to a new process',
         'A monthly data review with the owner: not a work report, but a list of places where the system shows a problem',
         'New processes and training for new managers — no separate invoice',
-        'Work beyond the limit — ₽ 2,900 an hour, no minimum order',
+        'Work beyond the limit — $35 an hour, no minimum order',
       ],
     },
     dev: {
@@ -126,13 +138,13 @@ export const pricingEn: PricingContent = {
       min: 'minimum 20 hours',
       from: 'from ',
       menu: [
-        { n: 'A ready-made catalogue module adapted to you', v: 160000 },
-        { n: 'A new module for your process', v: 350000 },
-        { n: '1C integration beyond the standard one', v: 250000 },
-        { n: 'Data migration from your previous system', v: 90000 },
+        { n: 'A ready-made catalogue module adapted to you', v: 1900 },
+        { n: 'A new module for your process', v: 4200 },
+        { n: '1C integration beyond the standard one', v: 3000 },
+        { n: 'Data migration from your previous system', v: 1100 },
       ],
       estimateB: 'Fixed estimate',
-      estimate: ' — after two weeks of analysis for ₽ 90,000. That amount is credited towards the project.',
+      estimate: ' — after two weeks of analysis for $1,100. That amount is credited towards the project.',
     },
   },
 

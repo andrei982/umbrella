@@ -1,4 +1,5 @@
-/* Страница «Стоимость»: калькулятор, график оплаты, счётчики, переключатели. Цены — в TIERS и YEAR. */
+/* Страница «Стоимость»: калькулятор, график оплаты, счётчики, переключатели.
+   Цены и тексты — из <script id="pricing-i18n"> (src/content/pricing*.ts, prices и js). */
 (function () {
   var root = document.documentElement;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -6,9 +7,14 @@
   var EN = root.lang === 'en';
   var T = JSON.parse((document.getElementById('pricing-i18n') || {}).textContent || '{}');
   var fill = function (s, v) { return s.replace(/\{(\w+)\}/g, function (_, k) { return v[k]; }); };
-  // суммы: «350 000 ₽» по-русски и «₽ 350,000» по-английски
+  var PR = T.prices, USD = PR.currency === 'USD';
+  // суммы: «350 000 ₽» в рублях и «$4,200» в долларах
   var num = function (v) { return Math.round(v).toLocaleString(EN ? 'en-US' : 'ru-RU').replace(/\s/g, '\u00a0'); };
-  var rub = function (v) { return EN ? '₽\u00a0' + num(v) : num(v) + '\u00a0₽'; };
+  var rub = function (v) { return USD ? '$' + num(v) : num(v) + '\u00a0₽'; };
+  // квартальный платёж (+15%), округлённый до шага прайса
+  var quarterOf = function (y) { return Math.round(y * 1.15 / 4 / PR.quarterStep) * PR.quarterStep; };
+  // подписи над столбиками графика: «550k» и «$6.6k»
+  var kfmt = function (x) { return USD ? '$' + (Math.round(x * 10) / 10) + 'k' : Math.round(x) + 'k'; };
 
   // Галочки
   var CHECK = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
@@ -86,9 +92,9 @@
 
   // Калькулятор
   var TIERS = [
-    { max: 25, name: T.tierNames[0], year: 350000, sup: 15000 },
-    { max: 60, name: T.tierNames[1], year: 550000, sup: 25000 },
-    { max: 120, name: T.tierNames[2], year: 950000, sup: 40000 }
+    { max: 25, name: T.tierNames[0], year: PR.year[0], sup: PR.support[0] },
+    { max: 60, name: T.tierNames[1], year: PR.year[1], sup: PR.support[1] },
+    { max: 120, name: T.tierNames[2], year: PR.year[2], sup: PR.support[2] }
   ];
   var c = document.querySelector('[data-calc]');
   var $ = function (s) { return c.querySelector(s); };
@@ -109,11 +115,11 @@
     }
     $('[data-res-label]').textContent = t.name;
     $('[data-res-users]').textContent = fill(T.seats, { n: n, max: t.max });
-    var quarter = Math.round(t.year * 1.15 / 4 / 1000) * 1000;
+    var quarter = quarterOf(t.year);
     var sub = state.pay === 'quarter' ? quarter * 4 : t.year;
     var ent = sub * 0.2 * (state.ent - 1);
     var sup = state.sup ? t.sup * 12 : 0;
-    var impl = n <= 60 ? 180000 : 0;
+    var impl = n <= 60 ? PR.impl : 0;
     $('[data-res-sub-l]').textContent = state.pay === 'quarter' ? T.subQuarter + rub(quarter) : T.subYear;
     setNum($('[data-res-sub]'), sub);
     $('[data-row-ent]').hidden = state.ent < 2;
@@ -143,12 +149,11 @@
   // График платежей
   var plan = document.querySelector('[data-plan]');
   var P = function (s) { return plan.querySelector(s); };
-  var YEAR = [350000, 550000, 950000];
+  var YEAR = PR.year;
   var MON = T.months;
   var ps = { mode: 'year', tier: 1 };
-  var short = function (v) { return Math.round(v / 1000) + 'k'; };
   var drawPlan = function () {
-    var y = YEAR[ps.tier], q = Math.round(y * 1.15 / 4 / 1000) * 1000;
+    var y = YEAR[ps.tier], q = quarterOf(y);
     var n = ps.mode === 'two' ? 24 : 12, pays = {};
     if (ps.mode === 'year') pays[0] = y;
     if (ps.mode === 'quarter') { pays[0] = q; pays[3] = q; pays[6] = q; pays[9] = q; }
@@ -167,7 +172,7 @@
       bar.style.setProperty('--h', hgt);
       bar.querySelector('i').style.height = hgt;
       var lb = bar.querySelector('b');
-      if (v) { if (lb._num == null) lb._num = 0; setNum(lb, v / 1000, function (x) { return Math.round(x) + 'k'; }, 900); } else setText(lb, '');
+      if (v) { if (lb._num == null) lb._num = 0; setNum(lb, v / 1000, kfmt, 900); } else setText(lb, '');
       var lab = months.children[k];
       lab.classList.toggle('q', k % (n > 12 ? 6 : 3) === 0);
       lab.classList.toggle('paid', !!v);

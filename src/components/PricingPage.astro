@@ -2,7 +2,7 @@
 /**
  * Страница «Стоимость» — общая разметка для /pricing/ и /en/pricing/.
  * Тексты — src/content/pricing.ts (ru) и pricing.en.ts (en).
- * Цены записаны здесь (data-count) и в src/scripts/pricing.js (TIERS, YEAR) — при изменении править оба места.
+ * Цены — в prices этих же файлов (рубли и доллары); и разметка, и калькулятор (src/scripts/pricing.js) берут их оттуда.
  */
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
@@ -16,12 +16,13 @@ const en = Astro.currentLocale === 'en';
 const t = en ? pricingEn : pricing;
 const home = en ? '/en/' : '/';
 const self = en ? '/en/pricing/' : '/pricing/';
-// суммы: «350 000 ₽» по-русски и «₽ 350,000» по-английски (как в остальной английской версии)
-const money = (v: number) => (en ? `₽ ${v.toLocaleString('en-US')}` : `${v.toLocaleString('ru-RU').replace(/\s/g, ' ')} ₽`);
+const pr = t.prices;
+// суммы: «350 000 ₽» в рублях и «$4,200» в долларах
+const money = (v: number) => (pr.currency === 'USD' ? `$${v.toLocaleString('en-US')}` : `${v.toLocaleString('ru-RU').replace(/\s/g, '\u00a0')}\u00a0₽`);
 const ARROW = '<svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
-const TIER_YEAR = [350000, 550000, 950000];
-const TIER_MONTH = [29000, 46000, 79000];
-const SUP = [15000, 25000, 40000];
+const TIER_YEAR = pr.year;
+const TIER_MONTH = pr.month;
+const SUP = pr.support;
 ---
 <Base
   preloadImages={[
@@ -72,7 +73,7 @@ const SUP = [15000, 25000, 40000];
           <div class="label">{t.hero.ticket.users}</div>
           <div class="dots" data-dots="120" data-on="48" aria-hidden="true"></div>
           <div class="scale" aria-hidden="true"><span>25</span><span>60</span><span>120</span></div>
-          <div class="ticket__sum"><span>{t.hero.ticket.sum}</span><b class="num" data-count="550000">{money(550000)}</b></div>
+          <div class="ticket__sum"><span>{t.hero.ticket.sum}</span><b class="num" data-count={TIER_YEAR[1]}>{money(TIER_YEAR[1])}</b></div>
           <div class="ticket__float"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>{t.hero.ticket.free}</div>
         </div>
       </div>
@@ -168,12 +169,12 @@ const SUP = [15000, 25000, 40000];
         <div class="calc__res" data-res aria-live="polite">
           <div class="res__tier"><div class="label" data-res-label>{t.calc.resLabel}</div><span class="status status--mint" data-res-users>{t.calc.resUsers}</span></div>
           <div class="dots" data-dots="120" data-on="48" data-live aria-hidden="true"></div>
-          <div class="res__total"><b class="num" data-res-total>{money(730000)}</b><span>{t.calc.total}</span></div>
+          <div class="res__total"><b class="num" data-res-total>{money(TIER_YEAR[1] + pr.impl)}</b><span>{t.calc.total}</span></div>
           <ul class="res__rows">
-            <li><span data-res-sub-l>{t.calc.rowSub}</span><b class="num" data-res-sub>{money(550000)}</b></li>
+            <li><span data-res-sub-l>{t.calc.rowSub}</span><b class="num" data-res-sub>{money(TIER_YEAR[1])}</b></li>
             <li data-row-ent hidden><span data-res-ent-l>{t.calc.rowEnt}</span><b class="num" data-res-ent>{money(0)}</b></li>
             <li data-row-sup hidden><span>{t.calc.rowSup}</span><b class="num" data-res-sup>{money(0)}</b></li>
-            <li><span>{t.calc.rowImpl}</span><b class="num" data-res-impl>{money(180000)}</b></li>
+            <li><span>{t.calc.rowImpl}</span><b class="num" data-res-impl>{money(pr.impl)}</b></li>
           </ul>
           <p class="res__note" data-res-note>{t.calc.note}</p>
           <p class="res__custom">{t.calc.custom}</p>
@@ -197,7 +198,7 @@ const SUP = [15000, 25000, 40000];
       <div class="card impl" data-reveal>
         <div>
           <div class="label">{t.extras.impl.label}</div>
-          <div class="impl__sum num" data-count="180000">{money(180000)}</div>
+          <div class="impl__sum num" data-count={pr.impl}>{money(pr.impl)}</div>
           <div class="impl__tags">
             {t.extras.impl.tags.map((x, i) => <span class:list={['status', i === 0 ? 'status--mint' : 'status--line']}>{x}</span>)}
           </div>
@@ -264,7 +265,7 @@ const SUP = [15000, 25000, 40000];
           <h3>{t.extras.dev.title}</h3>
           <p class="addon__lead">{t.extras.dev.lead}</p>
           <div class="rate">
-            <span class="rate__big"><b class="num" data-count="3200">{money(3200)}</b><span>{t.extras.dev.rateSuf}</span></span>
+            <span class="rate__big"><b class="num" data-count={pr.rate}>{money(pr.rate)}</b><span>{t.extras.dev.rateSuf}</span></span>
             <span class="status status--line">{t.extras.dev.min}</span>
           </div>
           <ul class="menu">
@@ -316,7 +317,7 @@ const SUP = [15000, 25000, 40000];
           <div class="sched__top">
             <div class="sched__sum">
               <div class="label" data-plan-cap>{t.pay.cap}</div>
-              <b class="num" data-plan-sum>{money(550000)}</b>
+              <b class="num" data-plan-sum>{money(TIER_YEAR[1])}</b>
               <small data-plan-sub>{t.pay.sub}</small>
             </div>
             <span class="status status--mint sched__badge" style="background:#22f2cf26;color:var(--c2)" data-plan-badge>{t.pay.badge}</span>
@@ -324,8 +325,8 @@ const SUP = [15000, 25000, 40000];
           <div class="bars" data-bars aria-hidden="true"></div>
           <div class="months" data-months aria-hidden="true"></div>
           <div class="sched__foot">
-            <span class="status">{t.pay.total} <b class="num" data-plan-total>{money(550000)}</b></span>
-            <span class="status" data-plan-month>{t.pay.month[0]} <b class="num" data-plan-mb>{money(45833)}</b> {t.pay.month[1]}</span>
+            <span class="status">{t.pay.total} <b class="num" data-plan-total>{money(TIER_YEAR[1])}</b></span>
+            <span class="status" data-plan-month>{t.pay.month[0]} <b class="num" data-plan-mb>{money(Math.round(TIER_YEAR[1] / 12))}</b> {t.pay.month[1]}</span>
           </div>
         </div>
       </div>
@@ -374,7 +375,7 @@ const SUP = [15000, 25000, 40000];
   </main>
   <Footer />
   <!-- строки для калькулятора и графика оплаты (src/scripts/pricing.js) -->
-  <script type="application/json" id="pricing-i18n" set:html={JSON.stringify(t.js)}></script>
+  <script type="application/json" id="pricing-i18n" set:html={JSON.stringify({ ...t.js, prices: pr })}></script>
   <script>
     import '../scripts/main.ts';
     import '../scripts/pricing.js';

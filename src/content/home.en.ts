@@ -127,11 +127,11 @@ export const homeEn: Home = {
     queueTitle: 'Awaiting your decision',
     queueAll: 'All requests →',
     queue: [
-      { icon: 'money', title: `Invoice payment No.${NBSP}1284`, titleMobile: `Invoice No.${NBSP}1284`, meta: 'Techsnab LLC · step: CFO', metaMobile: 'Techsnab LLC', sum: `₽${NBSP}184,500`, action: 'Approve', primary: true },
-      { icon: 'cart', title: 'Laptops for the sales team', titleMobile: 'Laptop purchase', meta: `Request No.${NBSP}312 · 3 pcs`, metaMobile: `Request No.${NBSP}312 · 3 pcs`, sum: `₽${NBSP}356,700`, action: 'Open' },
+      { icon: 'money', title: `Invoice payment No.${NBSP}1284`, titleMobile: `Invoice No.${NBSP}1284`, meta: 'Techsnab LLC · step: CFO', metaMobile: 'Techsnab LLC', sum: '$2,200', action: 'Approve', primary: true },
+      { icon: 'cart', title: 'Laptops for the sales team', titleMobile: 'Laptop purchase', meta: `Request No.${NBSP}312 · 3 pcs`, metaMobile: `Request No.${NBSP}312 · 3 pcs`, sum: '$4,260', action: 'Open' },
       { icon: 'doc', title: `Supply contract review No.${NBSP}45`, titleMobile: `Contract review No.${NBSP}45`, meta: 'Legal · due October 2', metaMobile: 'Legal', sum: '', action: 'Open' },
       { icon: 'calendarPlain', title: 'Leave · Oleg Pavlov', titleMobile: 'Leave · Oleg Pavlov', meta: 'October 14–27 · HR & people', metaMobile: 'October 14–27', sum: '', action: 'Open' },
-      { icon: 'receipt', title: 'Expense report · Darya Belova', titleMobile: '', meta: 'Business trip · 3 documents', metaMobile: '', sum: `₽${NBSP}27,350`, action: 'Open' },
+      { icon: 'receipt', title: 'Expense report · Darya Belova', titleMobile: '', meta: 'Business trip · 3 documents', metaMobile: '', sum: '$330', action: 'Open' },
     ],
     queueMobileCount: '7',
     queueMobileAll: 'Open all requests',
@@ -243,7 +243,7 @@ export const homeEn: Home = {
       status: 'Pending approval',
       fields: [
         { label: 'Supplier', value: 'Techsnab LLC', mobile: false },
-        { label: 'Amount', value: `₽${NBSP}184,500`, mobile: true },
+        { label: 'Amount', value: '$2,200', mobile: true },
         { label: 'Payer', value: 'Altair LLC', mobile: true },
         { label: 'Basis', value: `Purchase No.${NBSP}311`, mobile: false },
       ],
@@ -279,8 +279,8 @@ export const homeEn: Home = {
       meta: 'Client: Horizon LLC · September 2026',
       metaMobile: 'Horizon LLC · September 2026',
       stats: [
-        { label: 'Revenue', value: `₽${NBSP}4,200,000`, valueMobile: `₽${NBSP}4.2M` },
-        { label: 'Cost', value: `₽${NBSP}2,730,000`, valueMobile: `₽${NBSP}2.73M` },
+        { label: 'Revenue', value: '$50,100', valueMobile: '$50.1K' },
+        { label: 'Cost', value: '$32,600', valueMobile: '$32.6K' },
       ],
       marginLabel: 'Margin',
       margin: '35%',
@@ -367,12 +367,12 @@ export const homeEn: Home = {
     chat: {
       title: 'AI assistant',
       soon: 'soon',
-      answer: `Found 3 invoices for ₽${NBSP}412,300 that have been awaiting payment for more than five days:`,
+      answer: 'Found 3 invoices for $4,920 that have been awaiting payment for more than five days:',
       columns: ['Supplier', 'Amount', 'Waiting'],
       rows: [
-        ['Techsnab LLC', `₽${NBSP}184,500`, '7 days'],
-        ['Alfa-Service LLC', `₽${NBSP}156,000`, '6 days'],
-        ['Sokolov (sole trader)', `₽${NBSP}71,800`, '6 days'],
+        ['Techsnab LLC', '$2,200', '7 days'],
+        ['Alfa-Service LLC', '$1,860', '6 days'],
+        ['Sokolov (sole trader)', '$860', '6 days'],
       ],
       action: 'Open in the invoice register',
       input: 'Ask in plain words…',
@@ -397,7 +397,7 @@ export const homeEn: Home = {
     ],
     facts: [
       { label: 'First module launch', value: 'from 4 weeks' },
-      { label: 'Price', value: `from ₽${NBSP}350,000 a year`, href: '/en/pricing/' },
+      { label: 'Price', value: 'from $4,200 a year', href: '/en/pricing/' },
       { label: 'Hosting', value: 'Cloud or your own server' },
     ],
   },
@@ -408,7 +408,7 @@ export const homeEn: Home = {
     lead: 'Support and custom development are purchased separately and at any time — not necessarily at the start.',
     card: {
       label: 'Implementation · one-time',
-      sum: `₽${NBSP}180,000`,
+      sum: '$2,150',
       tags: [
         { text: '4–6 weeks', mint: true },
         { text: 'no “from”, no hourly billing', mint: false },
