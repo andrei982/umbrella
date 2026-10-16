@@ -359,11 +359,13 @@
 .ip-tl__weeks { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: var(--ink-3); }
 .ip-tl__bar { height: 6px; border-radius: 999px; background: var(--c4); position: relative; overflow: hidden; }
 .ip-tl__fill {
-  position: absolute; inset: 0; width: 0; border-radius: inherit;
+  position: absolute; inset: 0; border-radius: inherit;
   background: linear-gradient(90deg, var(--c1), var(--c1) 80%, var(--c2));
-  transition: width 1.8s var(--ease-out) .2s;
+  /* scaleX вместо width — без пересчёта раскладки на каждом кадре */
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 1.8s var(--ease-out) .2s;
 }
-.ip-tl.is-in .ip-tl__fill, html:not(.js) .ip-tl__fill { width: 100%; }
+.ip-tl.is-in .ip-tl__fill, html:not(.js) .ip-tl__fill { transform: none; }
 .ip-tl__steps { list-style: none; margin: -15px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
 .ip-tl__steps li { display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.3; color: var(--ink-2); }
 .ip-tl__steps li::before {
