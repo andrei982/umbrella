@@ -2,7 +2,13 @@
 (function () {
   var root = document.documentElement;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var rub = function (v) { return Math.round(v).toLocaleString('ru-RU').replace(/ |\s/g, ' ') + ' ₽'; };
+  // язык страницы: тексты для калькулятора и графика — из <script id="pricing-i18n"> (src/content/pricing*.ts)
+  var EN = root.lang === 'en';
+  var T = JSON.parse((document.getElementById('pricing-i18n') || {}).textContent || '{}');
+  var fill = function (s, v) { return s.replace(/\{(\w+)\}/g, function (_, k) { return v[k]; }); };
+  // суммы: «350 000 ₽» по-русски и «₽ 350,000» по-английски
+  var num = function (v) { return Math.round(v).toLocaleString(EN ? 'en-US' : 'ru-RU').replace(/\s/g, '\u00a0'); };
+  var rub = function (v) { return EN ? '₽\u00a0' + num(v) : num(v) + '\u00a0₽'; };
 
   // Галочки
   var CHECK = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
@@ -23,11 +29,11 @@
   });
 
   // Пересчёт цифр: число плавно едет от текущего значения к новому
-  var num = function (v) { return Math.round(v).toLocaleString('ru-RU').replace(/\s/g, '\u00a0'); };
   var int = function (v) { return String(Math.round(v)); };
+  // data-pre / data-suf — слова вокруг числа; data-fmt="int" — просто число, без ₽
   var fmtOf = function (el) {
-    var pre = el.dataset.pre || '', suf = el.dataset.suf != null ? el.dataset.suf : '\u00a0₽';
-    return function (v) { return pre + num(v) + suf; };
+    var pre = el.dataset.pre || '', suf = el.dataset.suf || '', f = el.dataset.fmt === 'int' ? int : rub;
+    return function (v) { return pre + f(v) + suf; };
   };
   var setNum = function (el, to, fmt, dur) {
     fmt = fmt || rub;
@@ -80,9 +86,9 @@
 
   // Калькулятор
   var TIERS = [
-    { max: 25, name: 'Полоса до 25', year: 350000, sup: 15000 },
-    { max: 60, name: 'Полоса 26–60', year: 550000, sup: 25000 },
-    { max: 120, name: 'Полоса 61–120', year: 950000, sup: 40000 }
+    { max: 25, name: T.tierNames[0], year: 350000, sup: 15000 },
+    { max: 60, name: T.tierNames[1], year: 550000, sup: 25000 },
+    { max: 120, name: T.tierNames[2], year: 950000, sup: 40000 }
   ];
   var c = document.querySelector('[data-calc]');
   var $ = function (s) { return c.querySelector(s); };
@@ -97,29 +103,29 @@
     var t = TIERS.filter(function (x) { return n <= x.max; })[0];
     res.classList.toggle('is-custom', !t);
     if (!t) {
-      $('[data-res-label]').textContent = 'Больше 120';
-      $('[data-res-users]').textContent = 'индивидуально';
+      $('[data-res-label]').textContent = T.over120;
+      $('[data-res-users]').textContent = T.individually;
       return;
     }
     $('[data-res-label]').textContent = t.name;
-    $('[data-res-users]').textContent = n + ' из ' + t.max + ' мест';
+    $('[data-res-users]').textContent = fill(T.seats, { n: n, max: t.max });
     var quarter = Math.round(t.year * 1.15 / 4 / 1000) * 1000;
     var sub = state.pay === 'quarter' ? quarter * 4 : t.year;
     var ent = sub * 0.2 * (state.ent - 1);
     var sup = state.sup ? t.sup * 12 : 0;
     var impl = n <= 60 ? 180000 : 0;
-    $('[data-res-sub-l]').textContent = state.pay === 'quarter' ? 'Подписка · 4 × ' + rub(quarter) : 'Подписка · за год';
+    $('[data-res-sub-l]').textContent = state.pay === 'quarter' ? T.subQuarter + rub(quarter) : T.subYear;
     setNum($('[data-res-sub]'), sub);
     $('[data-row-ent]').hidden = state.ent < 2;
-    $('[data-res-ent-l]').textContent = 'Ещё ' + (state.ent - 1) + ' юрл. · +' + (20 * (state.ent - 1)) + '%';
+    $('[data-res-ent-l]').textContent = fill(T.entRow, { n: state.ent - 1, p: 20 * (state.ent - 1) });
     setNum($('[data-res-ent]'), ent);
     $('[data-row-sup]').hidden = !state.sup;
     setNum($('[data-res-sup]'), sup);
-    if (impl) setNum($('[data-res-impl]'), impl); else setText($('[data-res-impl]'), 'по расчёту');
+    if (impl) setNum($('[data-res-impl]'), impl); else setText($('[data-res-impl]'), T.byCalc);
     setNum($('[data-res-total]'), sub + ent + sup + impl, rub, 900);
     $('[data-res-note]').textContent = impl
-      ? 'Со второго года — только подписка' + (state.sup ? ' и сопровождение.' : '.')
-      : 'Внедрение для контура больше 60 человек считаем отдельно — в итог не входит.';
+      ? T.noteNext + (state.sup ? T.noteNextSup : '') + '.'
+      : T.noteBig;
   };
   usersIn.addEventListener('input', function () { state.users = +usersIn.value; render(); });
   c.querySelectorAll('[data-ent]').forEach(function (b) {
@@ -138,7 +144,7 @@
   var plan = document.querySelector('[data-plan]');
   var P = function (s) { return plan.querySelector(s); };
   var YEAR = [350000, 550000, 950000];
-  var MON = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+  var MON = T.months;
   var ps = { mode: 'year', tier: 1 };
   var short = function (v) { return Math.round(v / 1000) + 'k'; };
   var drawPlan = function () {
@@ -165,19 +171,19 @@
       var lab = months.children[k];
       lab.classList.toggle('q', k % (n > 12 ? 6 : 3) === 0);
       lab.classList.toggle('paid', !!v);
-      lab.textContent = n > 12 && k % 12 === 0 ? (k ? '2-й год' : '1-й год') : MON[k % 12];
+      lab.textContent = n > 12 && k % 12 === 0 ? (k ? T.year2 : T.year1) : MON[k % 12];
     });
     var total = ps.mode === 'quarter' ? q * 4 : ps.mode === 'two' ? y * 2 : y;
     var badge = P('[data-plan-badge]');
-    P('[data-plan-cap]').textContent = ps.mode === 'quarter' ? 'Платёж раз в квартал' : 'Платёж в начале года';
+    P('[data-plan-cap]').textContent = ps.mode === 'quarter' ? T.capQuarter : T.capYear;
     setNum(P('[data-plan-sum]'), ps.mode === 'quarter' ? q : y, rub, 900);
-    P('[data-plan-sub]').textContent = ps.mode === 'quarter' ? '4 платежа за 12 месяцев' : ps.mode === 'two' ? '2 одинаковых платежа за 24 месяца' : '1 платёж за 12 месяцев';
+    P('[data-plan-sub]').textContent = ps.mode === 'quarter' ? T.subQ : ps.mode === 'two' ? T.subTwo : T.subY;
     setNum(P('[data-plan-total]'), total, rub, 900);
     setNum(P('[data-plan-mb]'), total / n, rub, 900);
     badge.classList.toggle('status--warn', ps.mode === 'quarter');
     badge.style.cssText = ps.mode === 'quarter' ? '' : 'background:#22f2cf26;color:var(--c2)';
-    if (ps.mode === 'quarter') { if (badge._num == null) badge._num = 0; setNum(badge, q * 4 - y, function (x) { return '+' + rub(x) + ' к году'; }, 900); }
-    else setText(badge, ps.mode === 'two' ? 'Цена зафиксирована на 2 года' : 'Базовая цена');
+    if (ps.mode === 'quarter') { if (badge._num == null) badge._num = 0; setNum(badge, q * 4 - y, function (x) { return '+' + rub(x) + T.badgeQuarter; }, 900); }
+    else setText(badge, ps.mode === 'two' ? T.badgeTwo : T.badgeBase);
   };
   plan.querySelectorAll('[data-mode]').forEach(function (b, i, all) {
     b.addEventListener('click', function () {

@@ -10,6 +10,9 @@ const { current } = Astro.props;
 // на внутренних страницах якоря главной ведут на главную
 const isHome = Astro.url.pathname === links.home;
 const to = (href: string) => (href.startsWith('#') && !isHome ? links.home + href : href);
+// переключатель языка ведёт на эту же страницу на другом языке: /pricing/ ⇄ /en/pricing/
+const path = Astro.url.pathname;
+const langHref = home.locale === 'en' ? path.replace(/^\/en(\/|$)/, '/') : `/en${path === '/' ? '/' : path}`;
 ---
 <div class="scroll-progress" aria-hidden="true"></div>
 <header class="site-header" data-header>
@@ -25,7 +28,7 @@ const to = (href: string) => (href.startsWith('#') && !isHome ? links.home + hre
     <div class="site-header__actions">
       <div class="lang" role="group" aria-label={ui.lang.aria}>
         <span class="lang__opt is-active" aria-current="true">{ui.lang.current}</span>
-        <a class="lang__opt" href={ui.lang.other.href} hreflang={ui.lang.other.lang} lang={ui.lang.other.lang} title={ui.lang.other.title} data-lang-link>{ui.lang.other.label}</a>
+        <a class="lang__opt" href={langHref} hreflang={ui.lang.other.lang} lang={ui.lang.other.lang} title={ui.lang.other.title} data-lang-link>{ui.lang.other.label}</a>
       </div>
       <a class="btn btn--primary btn--sm site-header__cta" href={to('#demo')} data-goal="demo_click">{header.cta}</a>
       <button type="button" class="burger" aria-label={header.menuOpen} aria-expanded="false" aria-controls="mnav" data-menu-open>
@@ -50,7 +53,7 @@ const to = (href: string) => (href.startsWith('#') && !isHome ? links.home + hre
     </ul>
   </nav>
   <div class="mnav__bottom">
-    <a class="mnav__lang" href={ui.lang.other.href} hreflang={ui.lang.other.lang} lang={ui.lang.other.lang} data-lang-link><span>{ui.lang.other.title}</span><b>{ui.lang.other.label}</b></a>
+    <a class="mnav__lang" href={langHref} hreflang={ui.lang.other.lang} lang={ui.lang.other.lang} data-lang-link><span>{ui.lang.other.title}</span><b>{ui.lang.other.label}</b></a>
     <a class="btn btn--primary" href={to('#demo')} data-menu-link data-goal="demo_click">{header.cta}</a>
   </div>
 </div>

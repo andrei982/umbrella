@@ -10,6 +10,10 @@ const home = getContent(Astro.currentLocale);
 const l = home.ui.legal;
 const title = doc === 'privacy' ? l.privacyTitle : l.termsTitle;
 const placeholder = doc === 'privacy' ? l.privacyPlaceholder : l.termsPlaceholder;
+const { ui } = home;
+// переключатель языка ведёт на этот же документ на другом языке
+const path = Astro.url.pathname;
+const langHref = home.locale === 'en' ? path.replace(/^\/en(\/|$)/, '/') : `/en${path}`;
 ---
 <Base title={`${title} — Umbrella AI`}>
   <header class="site-header legal-header">
@@ -17,7 +21,13 @@ const placeholder = doc === 'privacy' ? l.privacyPlaceholder : l.termsPlaceholde
       <a href={home.links.home} class="site-header__logo" aria-label={home.header.homeLabel}>
         <img src={logo.src} width="247" height="26" alt="Umbrella AI" />
       </a>
-      <a class="btn btn--ghost btn--sm" href={home.links.home}>{l.back}</a>
+      <div class="legal-header__actions">
+        <div class="lang" role="group" aria-label={ui.lang.aria}>
+          <span class="lang__opt is-active" aria-current="true">{ui.lang.current}</span>
+          <a class="lang__opt" href={langHref} hreflang={ui.lang.other.lang} lang={ui.lang.other.lang} title={ui.lang.other.title}>{ui.lang.other.label}</a>
+        </div>
+        <a class="btn btn--ghost btn--sm" href={home.links.home}>{l.back}</a>
+      </div>
     </div>
   </header>
   <main id="main" class="legal">

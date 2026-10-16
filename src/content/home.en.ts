@@ -59,6 +59,7 @@ export const homeEn: Home = {
     { label: 'Modules', href: '#modules' },
     { label: 'For groups of companies', href: '#groups' },
     { label: 'Implementation', href: '#implementation' },
+    { label: 'Pricing', href: '/en/pricing/' },
   ],
 
   header: {
@@ -82,8 +83,8 @@ export const homeEn: Home = {
       meta: 'Igor Smirnov · head of department · just now',
     },
     ticker: [
-      'Finance · Procurement · HR · Contracts · Projects · Analytics ·',
-      'Tasks · Calendar · Knowledge base · Timesheet · Directories ·',
+      'Finance · Procurement · HR · Projects · Analytics · Portal ·',
+      'Invoice Tracker · Providers · Timesheet · Projects List · Dashboards ·',
     ],
     proof: {
       label: 'Proven in practice',
@@ -110,9 +111,9 @@ export const homeEn: Home = {
       { label: 'HR & people', icon: 'users' },
       { label: 'Procurement', icon: 'cart' },
       { label: 'Finance', icon: 'money' },
-      { label: 'Legal', icon: 'doc' },
       { label: 'Projects', icon: 'case' },
-      { label: 'Knowledge base', icon: 'book' },
+      { label: 'Dashboards', icon: 'bars' },
+      { label: 'Timesheet', icon: 'calendar' },
     ],
     greeting: 'Good afternoon, Anna',
     greetingMeta: 'Wednesday, September 30 · 7 requests await your decision',
@@ -184,63 +185,39 @@ export const homeEn: Home = {
     allLink: { label: 'All platform modules', href: '#modules' },
     items: [
       {
-        icon: 'money', title: 'Finance & accounting', text: 'Every invoice comes with a request, an approval and closing documents', short: '',
+        icon: 'money', title: 'Finance & accounting', text: 'Payment approvals, client invoices and expense reimbursement', short: '', // the first item has no caption (it is expanded)
         chips: [
-          { label: 'Invoice payment requests' }, { label: 'Client invoices' }, { label: 'Invoice register' },
-          { label: 'Accounts receivable' }, { label: 'Closing documents' },
+          { label: 'Invoice payment approval requests' }, { label: 'Invoice Tracker' }, { label: 'Expense report' },
         ],
       },
       {
-        icon: 'cart', title: 'Procurement', text: 'From purchase request to supplier payment', short: 'From request to supplier payment',
+        icon: 'cart', title: 'Procurement', text: 'Supplier registry with counterparty checks and purchase requests', short: 'Suppliers and purchase requests',
         chips: [
-          { label: 'Purchase requests' }, { label: 'Supplier register' }, { label: 'Counterparty checks' },
-          { label: 'Expense reports' }, { label: 'Tenders', soon: true },
+          { label: 'Providers' }, { label: 'Purchase / service request', soon: true },
         ],
       },
       {
-        icon: 'users', title: 'HR & people', text: 'Hiring, leave and offboarding along clear routes', short: 'Hiring, leave, offboarding',
+        icon: 'users', title: 'HR & people', text: 'Company structure, time tracking and handovers', short: 'Employees, Timesheet, handover',
         chips: [
-          { label: 'Employees' }, { label: 'Hiring requests' }, { label: 'Timesheet' },
-          { label: 'Leave & schedule' }, { label: 'Offboarding' }, { label: 'Handover' },
+          { label: 'Employees' }, { label: 'Timesheet', soon: true }, { label: 'Handover' },
         ],
       },
       {
-        icon: 'case', title: 'Projects & sales', text: 'Cost from logged hours and the real margin of every project', short: 'Project cost and margin',
+        icon: 'case', title: 'Projects', text: 'Project registry and the team’s kanban board', short: 'Project registry and kanban',
         chips: [
-          { label: 'Clients & projects' }, { label: 'Project margin' }, { label: 'Cost' },
-          { label: 'Sales pipeline', soon: true }, { label: 'Commercial proposals', soon: true },
+          { label: 'Projects List' }, { label: 'Project Management Tool' },
         ],
       },
       {
-        icon: 'doc', title: 'Legal', text: 'Contracts and documents of every company in the group', short: 'Contracts and documents of the group',
+        icon: 'bars', title: 'Management analytics', text: 'Dashboards: costs, taxes, loans, cash and banks across the group', short: 'Dashboards for the owner',
         chips: [
-          { label: 'Contract drafting' }, { label: 'Contract review' }, { label: 'Template library' },
-          { label: 'Company details' }, { label: 'Litigation' }, { label: 'Claims', soon: true },
+          { label: 'Inner Costs' }, { label: 'Taxes' }, { label: 'Loans' }, { label: 'Cash' }, { label: 'Banks' },
         ],
       },
       {
-        icon: 'bars', title: 'Management analytics', text: 'Owner dashboard: cash, margin and workload across the group', short: 'Owner dashboard',
+        icon: 'grid', title: 'Portal', text: 'One sign-in and one interface for every module', short: 'Sign-in, search, notifications',
         chips: [
-          { label: 'Owner dashboard' }, { label: 'Budget', soon: true },
-          { label: 'Staff costs', soon: true }, { label: 'Income & expenses', soon: true },
-        ],
-      },
-      {
-        icon: 'tasks', title: 'Tasks & calendar', text: 'Goals, tasks and meetings of your team in one window', short: 'Goals, tasks and meetings',
-        chips: [
-          { label: 'Tasks & goals' }, { label: 'Personal calendar' }, { label: 'Yandex Calendar and Mail.ru Calendar' }, { label: 'To-do list' },
-        ],
-      },
-      {
-        icon: 'book', title: 'Knowledge base', text: 'Company rules and structure that are easy to find', short: 'Org structure and standards',
-        chips: [
-          { label: 'Org structure' }, { label: 'Work standards', soon: true }, { label: 'Company policies', soon: true },
-        ],
-      },
-      {
-        icon: 'grid', title: 'Settings & integrations', text: 'Directories, notifications and search across the whole portal', short: 'Directories, search, notifications',
-        chips: [
-          { label: 'Directory builder' }, { label: 'Notifications' }, { label: 'Portal-wide search' }, { label: 'Project tracker' },
+          { label: 'Sign in with Google' }, { label: 'Notifications' }, { label: 'Section search' },
         ],
       },
     ],
@@ -420,7 +397,7 @@ export const homeEn: Home = {
     ],
     facts: [
       { label: 'First module launch', value: 'from 4 weeks' },
-      { label: 'Price', value: 'Calculated after the process review' },
+      { label: 'Price', value: `from ₽${NBSP}350,000 a year`, href: '/en/pricing/' },
       { label: 'Hosting', value: 'Cloud or your own server' },
     ],
   },
@@ -448,7 +425,7 @@ export const homeEn: Home = {
       ],
       note: 'Scope and timing are set out in the contract. Setups with more than 60 users are calculated separately.',
     },
-    cta: { label: 'See pricing (in Russian)', href: '/pricing/' },
+    cta: { label: 'See pricing', href: '/en/pricing/' },
   },
 
   demo: {
@@ -496,7 +473,6 @@ export const homeEn: Home = {
           { label: 'Finance & procurement', href: '#finance' },
           { label: 'HR & tasks', href: '#people' },
           { label: 'Projects', href: '#projects' },
-          { label: 'Legal & contracts', href: '#modules' },
           { label: 'AI assistant', href: '#ai' },
         ],
       },
@@ -504,6 +480,7 @@ export const homeEn: Home = {
         title: 'Company',
         links: [
           { label: 'Implementation', href: '#implementation' },
+          { label: 'Pricing', href: '/en/pricing/' },
           { label: 'Contacts', href: '#contacts' },
         ],
       },
@@ -511,7 +488,6 @@ export const homeEn: Home = {
     contactsTitle: 'Get in touch',
     contacts: [
       { label: 'hi@4ssistance.com', href: 'mailto:hi@4ssistance.com' },
-      { label: '+7 (916) 429-38-53', href: 'tel:+79164293853' },
     ],
     copyright: '© 2026 Umbrellacorp',
     privacy: 'Privacy policy',

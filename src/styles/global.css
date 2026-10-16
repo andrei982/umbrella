@@ -342,6 +342,9 @@ button { cursor: pointer; }
 .lang__opt.is-active { background: var(--c5); color: var(--c1); }
 a.lang__opt:hover { color: var(--c2); }
 @media (max-width: 767.98px) { .site-header .lang { display: none; } }
+/* юридические страницы: мобильного меню нет — переключатель языка остаётся в шапке */
+.legal-header__actions { display: flex; align-items: center; gap: 12px; }
+@media (max-width: 767.98px) { .legal-header .lang { display: inline-flex; } .legal-header .btn--sm { padding-inline: 14px; } }
 .mnav__lang {
   display: flex; align-items: center; justify-content: space-between;
   min-height: 52px; padding: 0 22px;
