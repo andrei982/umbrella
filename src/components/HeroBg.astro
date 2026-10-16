@@ -1,0 +1,14 @@
+---
+/** Фон первого экрана (вместо видео): сетка, маршруты согласования и импульсы к знаку X — src/scripts/hero-bg.ts.
+    Без JS виден статичный CSS-вариант: сетка и мятное свечение.
+    tags={false} — без плашек-событий (когда справа уже есть своя карточка, как на странице цен). */
+interface Props { tags?: boolean }
+const { tags = true } = Astro.props;
+---
+<div class="hero__video hero__bg" aria-hidden="true">
+  <canvas class="hero__canvas" data-hero-canvas data-tags={tags ? undefined : 'off'}></canvas>
+  <div class="hero__shade"></div>
+</div>
+<script>
+  import '../scripts/hero-bg.ts';
+</script>

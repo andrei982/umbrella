@@ -6,6 +6,7 @@ import { isPlaceholder } from '../lib/typo';
 import Icon from './Icon.astro';
 import Mark from './Mark.astro';
 import Portal from './Portal.astro';
+import HeroBg from './HeroBg.astro';
 import silkHires from '../assets/img/silk-hires.jpg';
 
 const h = home.hero;
@@ -15,25 +16,9 @@ const silkSizes = '(min-width: 1440px) 1360px, (min-width: 768px) calc(100vw - 6
 const queueMobile = p.queue.filter((q) => q.titleMobile).slice(0, 4);
 ---
 <section class="hero bg-black" id="product" aria-labelledby="hero-title">
-  <!-- первый экран: видеофон (декоративный) + главный блок -->
+  <!-- первый экран: живой фон (декоративный) + главный блок -->
   <div class="hero__first">
-    <div class="hero__video" aria-hidden="true">
-      <video
-        class="hero__video-el"
-        muted
-        loop
-        playsinline
-        preload="none"
-        disablepictureinpicture
-        disableremoteplayback
-        tabindex="-1"
-        data-hero-video
-        data-src-desktop="/video/hero-desktop.mp4"
-        data-src-mobile="/video/hero-mobile.mp4"
-        data-parallax="0.15"
-      ></video>
-      <div class="hero__shade"></div>
-    </div>
+    <HeroBg />
     <div class="container">
       <div class="hero__intro">
         <div class="pill-badge hero-anim" style="--d:80">

@@ -21,10 +21,6 @@ import silk from '../assets/img/silk.jpg';
 const og = await getImage({ src: silk, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
 ---
 <Base
-  preloadImages={[
-    { href: '/video/hero-poster.webp', media: '(min-width: 768px)', type: 'image/webp' },
-    { href: '/video/hero-poster-mobile.webp', media: '(max-width: 767.98px)', type: 'image/webp' },
-  ]}
   ogImage={og.src}
 >
   <Header />
