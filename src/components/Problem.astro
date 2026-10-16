@@ -1,10 +1,15 @@
 ---
+/** «01 — Проблема»: бенто из четырёх карточек, в каждой — мини-сцена хаоса (иллюстрации, aria-hidden).
+    Тексты и данные сцен — home.problem (src/content/home*.ts). Стили — блок «Проблема» в src/styles/problem.css. */
 import { getContent } from '../content';
-const home = getContent(Astro.currentLocale);
 import Icon from './Icon.astro';
 import Lines from './Lines.astro';
+import '../styles/problem.css';
 
+const home = getContent(Astro.currentLocale);
 const s = home.problem;
+const sc = s.scenes;
+const num = (i: number) => String(i + 1).padStart(2, '0');
 ---
 <section class="section bg-light on-light" aria-labelledby="problem-title">
   <div class="container">
@@ -14,20 +19,108 @@ const s = home.problem;
         <h2 class="h2" id="problem-title"><Lines text={s.title} desktopOnly /></h2>
       </div>
     </div>
-    <div class="problem-grid">
-      {s.cards.map((c, i) => (
-        <article class="pcard" data-reveal style={`--i:${i}`}>
-          <div class="pcard__top">
-            <span class="pcard__num">{String(i + 1).padStart(2, '0')}</span>
-            <Icon name={c.icon} size={26} stroke={1.5} />
+
+    <div class="pb">
+      <!-- 01 — счета в мессенджерах -->
+      <article class="pb-card pb-card--chat" data-anim>
+        <div class="pb-scene" aria-hidden="true">
+          <div class="chat">
+            <div class="chat__bar">
+              <span class="chat__ava"><Icon name="chat" size={16} stroke={1.8} /></span>
+              <span class="chat__app">{sc.chat.app}</span>
+              <span class="chat__unread">{sc.chat.unread}</span>
+            </div>
+            <div class="chat__body">
+              {sc.chat.msgs.map((m, i) => (
+                <div class:list={['msg', m.me && 'msg--me']} style={`--k:${i}`}>
+                  {!m.me && <span class="msg__who">{m.who}</span>}
+                  <span class="msg__text">{m.text}</span>
+                </div>
+              ))}
+              <div class="msg msg--typing" style={`--k:${sc.chat.msgs.length}`}>
+                <span class="msg__text">{sc.chat.typing}<i></i><i></i><i></i></span>
+              </div>
+            </div>
+            <div class="chat__status"><span class="pulse"></span>{sc.chat.status}</div>
           </div>
-          <div class="pcard__body">
-            <h3>{c.title}</h3>
-            <p>{c.text}</p>
-            {i === s.cards.length - 1 && <a class="pcard__more" href={s.solveLink.href}>{s.solveLink.label}<Icon name="arrow" size={16} stroke={1.8} /></a>}
+        </div>
+        <div class="pb-card__text">
+          <span class="pb-card__num">{num(0)}</span>
+          <h3>{s.cards[0].title}</h3>
+          <p>{s.cards[0].text}</p>
+        </div>
+      </article>
+
+      <!-- 02 — сводки вручную -->
+      <article class="pb-card pb-card--sheet pb-card--dark" data-anim>
+        <div class="pb-scene" aria-hidden="true">
+          <div class="sheet">
+            <div class="sheet__ghost sheet__ghost--2"></div>
+            <div class="sheet__ghost sheet__ghost--1"></div>
+            <div class="sheet__win">
+              <div class="sheet__file"><span class="sheet__xls">X</span>{sc.sheet.file}</div>
+              <div class="sheet__grid">
+                {sc.sheet.cols.map((c) => <span class="sheet__th">{c}</span>)}
+                {sc.sheet.rows.map((r, i) => r.map((c, j) => (
+                  <span class:list={['sheet__td', (c === '?' || c.startsWith('#')) && 'is-bad', i === 2 && j === 1 && 'is-cursor']} style={`--k:${i * 3 + j}`}>{c}</span>
+                )))}
+              </div>
+              <div class="sheet__stale"><span class="pulse"></span>{sc.sheet.stale}</div>
+            </div>
           </div>
-        </article>
-      ))}
+        </div>
+        <div class="pb-card__text">
+          <span class="pb-card__num">{num(1)}</span>
+          <h3>{s.cards[1].title}</h3>
+          <p>{s.cards[1].text}</p>
+        </div>
+      </article>
+
+      <!-- 03 — у каждого юрлица свои порядки -->
+      <article class="pb-card pb-card--ent pb-card--dark" data-anim>
+        <div class="pb-scene" aria-hidden="true">
+          <div class="ent">
+            {sc.entities.items.map((name, i) => (
+              <div class="ent__col" style={`--c:${i}`}>
+                <div class="ent__name">{name}</div>
+                <ol class="ent__steps">
+                  {sc.entities.steps[i].map((st, k) => <li style={`--k:${k}`}>{st}</li>)}
+                </ol>
+              </div>
+            ))}
+            <div class="ent__note"><span>≠</span>{sc.entities.note}</div>
+          </div>
+        </div>
+        <div class="pb-card__text">
+          <span class="pb-card__num">{num(2)}</span>
+          <h3>{s.cards[2].title}</h3>
+          <p>{s.cards[2].text}</p>
+        </div>
+      </article>
+
+      <!-- 04 — нет единой картины по людям -->
+      <article class="pb-card pb-card--people" data-anim>
+        <div class="pb-scene" aria-hidden="true">
+          <div class="orbit">
+            <svg class="orbit__lines" viewBox="0 0 400 260" preserveAspectRatio="none">
+              <path d="M200 130 L58 40 M200 130 L340 34 M200 130 L30 150 M200 130 L372 150 M200 130 L96 236 M200 130 L300 236" />
+            </svg>
+            <div class="orbit__q">{sc.people.question}</div>
+            {sc.people.apps.map((a, i) => <span class="orbit__app" style={`--k:${i}`}>{a}</span>)}
+          </div>
+        </div>
+        <div class="pb-card__text">
+          <span class="pb-card__num">{num(3)}</span>
+          <h3>{s.cards[3].title}</h3>
+          <p>{s.cards[3].text}</p>
+        </div>
+      </article>
     </div>
+
+    <a class="pb-cta" href={s.solveLink.href} data-reveal>
+      <span class="pb-cta__x" aria-hidden="true"><Icon name="check" size={18} stroke={2.2} /></span>
+      <span class="pb-cta__text">{s.cta}</span>
+      <span class="pb-cta__link">{s.solveLink.label}<Icon name="arrow" size={18} stroke={1.8} /></span>
+    </a>
   </div>
 </section>

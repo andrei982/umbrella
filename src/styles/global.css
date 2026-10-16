@@ -710,31 +710,7 @@ body.menu-open { overflow: hidden; }
 /* ==========================================================================
    02 · Проблема
    ========================================================================== */
-.problem-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
-@media (min-width: 768px) { .problem-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; } }
-@media (min-width: 1200px) { .problem-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.pcard {
-  min-height: 204px;
-  padding: 22px;
-  border-radius: 22px;
-  background: var(--c5);
-  display: flex; flex-direction: column; justify-content: space-between; gap: 24px;
-  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
-}
-.pcard:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0, 0, 0, .07); }
-.pcard__top { display: flex; align-items: center; justify-content: space-between; }
-.pcard__num { font-size: 14px; color: #666; font-variant-numeric: tabular-nums; }
-.pcard__body { display: flex; flex-direction: column; gap: 10px; }
-.pcard h3 { font-size: var(--fs-h3); line-height: 1.2; font-weight: 500; letter-spacing: -0.02em; }
-.pcard p { font-size: 15px; line-height: 1.5; color: var(--ink-2); }
-.pcard .icon { transition: transform .5s var(--ease-spring); }
-.pcard:hover .icon { transform: rotate(-8deg) scale(1.08); }
-@media (min-width: 768px) {
-  .pcard { min-height: 260px; padding: 32px; border-radius: 28px; }
-  .pcard__num { font-size: 15px; }
-  .pcard__body { gap: 14px; }
-  .pcard p { font-size: 16px; line-height: 1.55; }
-}
+/* блок «Проблема» — src/styles/problem.css */
 
 /* ==========================================================================
    03 · Как это устроено — диаграмма
@@ -1720,7 +1696,6 @@ select.input {
   .ai__text .btn { align-self: stretch; }
   .bubble { padding: 14px 16px; font-size: 15px; }
 }
-@media (min-width: 1200px) { .pcard { min-height: 320px; } }
 
 /* Первый экран — только главный блок: интро занимает высоту окна минус шапка,
    контент по центру и масштабируется по высоте; сцена начинается ниже сгиба */
@@ -1897,7 +1872,6 @@ select.input {
 /* ==========================================================================
    Мобильная доводка (аудит 320–430 px)
    ========================================================================== */
-.pcard h3 { text-wrap: balance; }
 .pill-badge svg { flex-shrink: 0; }
 .acc__titles { line-height: 1.25; }
 .acc--instant, .acc--instant * { transition: none !important; }
@@ -1922,14 +1896,13 @@ select.input {
 
 /* на тач-экранах hover не «залипает» после тапа по неинтерактивным карточкам */
 @media (hover: none) {
-  .pcard:hover { transform: none; box-shadow: none; }
-  .pcard:hover .icon, .mcard:hover .icon-box, .role:hover .icon-box { transform: none; }
+  .pb-card:hover { transform: none; box-shadow: none; }
+  .mcard:hover .icon-box, .role:hover .icon-box { transform: none; }
   .mcard:hover, .role:hover { background: var(--c1-5); }
 }
 
 @media (max-width: 767.98px) {
   .lead { line-height: 1.5; }
-  .pcard__top .icon { width: 22px; height: 22px; }
   .pill-badge svg { width: 20px; height: 20px; }
   /* H1 всегда в 4 строки, как в эталоне: на 320–350 чуть меньше 35px */
   .hero .h1 { font-size: min(var(--fs-h1), calc((100vw - 40px) / 9)); }

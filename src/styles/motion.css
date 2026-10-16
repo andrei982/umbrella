@@ -57,3 +57,7 @@ html.lenis, html.lenis body { height: auto; }
   .roll i, .btn::before { transition: none; }
   .glow { display: none; }
 }
+
+/* Анимации появления (наклоны, сдвиги) не должны давать горизонтальную прокрутку:
+   clip, а не hidden — так main не становится контейнером прокрутки и не ломает sticky */
+main { overflow-x: clip; }

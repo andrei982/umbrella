@@ -140,15 +140,8 @@ if (!reduce) {
         onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out', stagger: 0.1, clearProps: CLEAR, overwrite: true, ...vars }),
       });
     };
-    // «Проблема»: на ≥768 карточки — липкая стопка; полупрозрачная карточка просвечивала бы текстом нижней,
-    // поэтому там только подъём без прозрачности, а на телефоне — обычное появление
-    if (window.matchMedia('(min-width: 768px)').matches) {
-      const cards = $$('.pcard');
-      if (cards.length) gsap.set(cards, { transition: 'none' });
-      cards.forEach((c) => gsap.from(c, { y: 90, duration: 1.1, ease: 'expo.out', clearProps: CLEAR, scrollTrigger: { trigger: c, start: 'top 95%', once: true } }));
-    } else {
-      batch('.pcard');
-    }
+    batch('.pb-card', { stagger: 0.12 });
+    batch('.pb-cta');
     batch('.role, .bento__feature, .bento__cta');
     batch('.metric, .facts, .ip, .flows-m');
     batch('.split__text .checklist li', { stagger: 0.08 });

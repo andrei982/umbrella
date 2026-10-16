@@ -154,6 +154,35 @@ export const homeEn: Home = {
       { icon: 'building', title: 'Each legal entity has its own rules', text: 'Company details, contracts and documents live in different places, and processes drift apart across the group.' },
       { icon: 'users', title: 'No single view of people', text: 'Leave, hiring, tasks and hours sit in different services. It’s hard to tell who is doing what and what’s on fire.' },
     ],
+    // mini scenes inside the cards (illustrations, fictional data)
+    scenes: {
+      chat: {
+        app: 'Finance · group chat', unread: '47',
+        msgs: [
+          { who: 'AK', text: 'Who approved the Techsnab invoice?' },
+          { who: 'IS', text: 'I forwarded it to Oleg, no reply' },
+          { who: 'You', text: 'Oleg is on leave until the 14th', me: true },
+        ],
+        typing: 'Darya is typing',
+        status: 'Supplier waiting for payment: 9 days',
+      },
+      sheet: {
+        file: 'Report_v7_final(2).xlsx',
+        cols: ['Entity', 'Revenue', 'Margin'],
+        rows: [['Altair', '$50.1K', '?'], ['Service', '#REF!', '—'], ['Projects', '$37.0K', '?']],
+        stale: 'updated 12 days ago',
+      },
+      entities: {
+        items: ['Altair', 'Service', 'Projects'],
+        steps: [['Request', 'Director', 'Payment'], ['Request', 'Accounting', 'Director', 'Payment'], ['Email', 'Payment']],
+        note: '3 routes for one invoice',
+      },
+      people: {
+        question: 'Who is doing what?',
+        apps: ['Email', 'Leave sheet', 'Calendar', 'Task tracker', 'Messenger', 'Hours in Excel'],
+      },
+    },
+    cta: 'Umbrella brings all of this into one system',
   },
 
   video: {
