@@ -154,13 +154,22 @@ export const homeEn: Home = {
       { icon: 'building', title: 'Each legal entity has its own rules', text: 'Company details, contracts and documents live in different places, and processes drift apart across the group.' },
       { icon: 'users', title: 'No single view of people', text: 'Leave, hiring, tasks and hours sit in different services. It’s hard to tell who is doing what and what’s on fire.' },
     ],
-    // mini scenes inside the cards (illustrations, fictional data)
-    scenes: {
-      chat: { app: 'Finance · group chat', unread: '47', question: 'Who approved the Techsnab invoice?', status: 'Supplier waiting for payment: 9 days' },
-      sheet: { file: 'Report_v7_final(2).xlsx', label: 'Group margin', value: '#REF!', stale: 'updated 12 days ago' },
-      entities: { items: ['Altair', 'Service', 'Projects'], steps: [3, 5, 2], note: '3 routes for one invoice' },
-      people: { question: 'Who is doing what?', apps: ['Email', 'Calendar', 'Leave sheet', 'Task tracker'] },
-    },
+    // fragments on the "chaos → order" stage: p — which problem it belongs to, kind — chip style (fictional data)
+    frags: [
+      { p: 0, kind: 'msg', text: 'Who approved the Techsnab invoice?' },
+      { p: 0, kind: 'badge', text: '47' },
+      { p: 0, kind: 'warn', text: 'Supplier waiting: 9 days' },
+      { p: 1, kind: 'file', text: 'Report_v7_final(2).xlsx' },
+      { p: 1, kind: 'err', text: '#REF!' },
+      { p: 1, kind: 'warn', text: 'updated 12 days ago' },
+      { p: 2, kind: 'chip', text: 'Altair · 3 steps' },
+      { p: 2, kind: 'chip', text: 'Service · 5 steps' },
+      { p: 2, kind: 'file', text: 'Contract_scan.pdf' },
+      { p: 3, kind: 'msg', text: 'Who is doing what?' },
+      { p: 3, kind: 'chip', text: 'Leave sheet' },
+      { p: 3, kind: 'chip', text: 'Task tracker' },
+    ],
+    order: 'One system',
     cta: 'Umbrella brings all of this into one system',
   },
 

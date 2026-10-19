@@ -1,15 +1,24 @@
 ---
-/** «01 — Проблема»: бенто из четырёх карточек, в каждой — мини-сцена хаоса (иллюстрации, aria-hidden).
-    Тексты и данные сцен — home.problem (src/content/home*.ts). Стили — блок «Проблема» в src/styles/problem.css. */
+/** «01 — Проблема»: «хаос → порядок». Слева — четыре проблемы, справа — тёмная сцена с обрывками
+    чатов, таблиц и сервисов (иллюстрация, aria-hidden). При прокрутке подсвечивается проблема за проблемой,
+    затем обрывки слетаются в знак X (src/scripts/problem-motion.ts). Без JS и при reduced-motion — статичный хаос.
+    Тексты — home.problem (src/content/home*.ts), стили — src/styles/problem.css. */
 import { getContent } from '../content';
 import Icon from './Icon.astro';
 import Lines from './Lines.astro';
+import xMint from '../assets/logo/umbrellacorp-x-mint.svg';
 import '../styles/problem.css';
 
 const home = getContent(Astro.currentLocale);
 const s = home.problem;
-const sc = s.scenes;
 const num = (i: number) => String(i + 1).padStart(2, '0');
+// раскладка обрывков: [x %, y %, наклон°] — по ряду на проблему; x — доля и ширины сцены, и ширины плашки, так что край не вылезает
+const POS: [number, number, number][] = [
+  [8, 12, -4], [64, 7, 9], [94, 21, 3],
+  [4, 35, 5], [56, 40, -5], [96, 47, -2],
+  [6, 61, 4], [46, 67, -4], [94, 73, 6],
+  [12, 87, -3], [56, 93, 4], [94, 89, -6],
+];
 ---
 <section class="section bg-light on-light" aria-labelledby="problem-title">
   <div class="container">
@@ -20,82 +29,36 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
       </div>
     </div>
 
-    <div class="pb">
-      <!-- 01 — счета в мессенджерах -->
-      <article class="pb-card pb-card--chat" data-anim>
-        <div class="pb-scene" aria-hidden="true">
-          <div class="chat">
-            <div class="chat__bar">
-              <span class="chat__ava"><Icon name="chat" size={16} stroke={1.8} /></span>
-              <span class="chat__app">{sc.chat.app}</span>
-              <span class="chat__unread">{sc.chat.unread}</span>
+    <div class="chaos" data-chaos>
+      <ol class="chaos__list">
+        {s.cards.map((c, i) => (
+          <li class="chaos__item">
+            <span class="chaos__num">{num(i)}</span>
+            <div class="chaos__body">
+              <h3>{c.title}</h3>
+              <p>{c.text}</p>
             </div>
-            <div class="chat__msg">{sc.chat.question}</div>
-            <div class="chat__status"><span class="pulse"></span>{sc.chat.status}</div>
-          </div>
-        </div>
-        <div class="pb-card__text">
-          <span class="pb-card__num">{num(0)}</span>
-          <h3>{s.cards[0].title}</h3>
-          <p>{s.cards[0].text}</p>
-        </div>
-      </article>
+          </li>
+        ))}
+      </ol>
 
-      <!-- 02 — сводки вручную -->
-      <article class="pb-card pb-card--sheet pb-card--dark" data-anim>
-        <div class="pb-scene" aria-hidden="true">
-          <div class="sheet">
-            <div class="sheet__file"><span class="sheet__xls">X</span>{sc.sheet.file}</div>
-            <div class="sheet__label">{sc.sheet.label}</div>
-            <div class="sheet__value">{sc.sheet.value}</div>
-            <div class="sheet__stale"><span class="pulse"></span>{sc.sheet.stale}</div>
-          </div>
+      <div class="chaos__stage" aria-hidden="true">
+        {s.frags.map((f, i) => (
+          <span class="frag" data-p={f.p} style={`--x:${POS[i][0]};--y:${POS[i][1]};--r:${POS[i][2]}deg;--k:${i}`}>
+            <span class:list={['frag__in', `frag--${f.kind}`]}>
+              {f.kind === 'msg' && <Icon name="chat" size={14} stroke={1.8} />}
+              {f.kind === 'file' && <span class:list={['frag__file', f.text.endsWith('.pdf') && 'frag__file--pdf']}>{f.text.endsWith('.pdf') ? 'P' : 'X'}</span>}
+              {f.kind === 'warn' && <span class="pulse"></span>}
+              <span class="frag__t">{f.text}</span>
+            </span>
+          </span>
+        ))}
+        <div class="chaos__mark">
+          <span class="chaos__glow"></span>
+          <img src={xMint.src} width="71" height="58" alt="" />
+          <span class="chaos__order">{s.order}</span>
         </div>
-        <div class="pb-card__text">
-          <span class="pb-card__num">{num(1)}</span>
-          <h3>{s.cards[1].title}</h3>
-          <p>{s.cards[1].text}</p>
-        </div>
-      </article>
-
-      <!-- 03 — у каждого юрлица свои порядки -->
-      <article class="pb-card pb-card--ent pb-card--dark" data-anim>
-        <div class="pb-scene" aria-hidden="true">
-          <div class="ent">
-            {sc.entities.items.map((name, i) => (
-              <div class="ent__row" style={`--c:${i}`}>
-                <span class="ent__name">{name}</span>
-                <span class="ent__route">
-                  {Array.from({ length: sc.entities.steps[i] }, (_, k) => <i style={`--k:${k}`}></i>)}
-                </span>
-              </div>
-            ))}
-            <div class="ent__note"><span>≠</span>{sc.entities.note}</div>
-          </div>
-        </div>
-        <div class="pb-card__text">
-          <span class="pb-card__num">{num(2)}</span>
-          <h3>{s.cards[2].title}</h3>
-          <p>{s.cards[2].text}</p>
-        </div>
-      </article>
-
-      <!-- 04 — нет единой картины по людям -->
-      <article class="pb-card pb-card--people" data-anim>
-        <div class="pb-scene" aria-hidden="true">
-          <div class="orbit">
-            <div class="orbit__apps">
-              {sc.people.apps.map((a, i) => <span class="orbit__app" style={`--k:${i}`}>{a}</span>)}
-            </div>
-            <div class="orbit__q">{sc.people.question}</div>
-          </div>
-        </div>
-        <div class="pb-card__text">
-          <span class="pb-card__num">{num(3)}</span>
-          <h3>{s.cards[3].title}</h3>
-          <p>{s.cards[3].text}</p>
-        </div>
-      </article>
+      </div>
     </div>
 
     <a class="pb-cta" href={s.solveLink.href} data-reveal>
@@ -105,3 +68,7 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
     </a>
   </div>
 </section>
+
+<script>
+  import '../scripts/problem-motion.ts';
+</script>

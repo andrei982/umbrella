@@ -140,7 +140,6 @@ if (!reduce) {
         onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out', stagger: 0.1, clearProps: CLEAR, overwrite: true, ...vars }),
       });
     };
-    batch('.pb-card', { stagger: 0.12 });
     batch('.pb-cta');
     batch('.role, .bento__feature, .bento__cta');
     batch('.metric, .facts, .ip, .flows-m');

@@ -1896,7 +1896,6 @@ select.input {
 
 /* на тач-экранах hover не «залипает» после тапа по неинтерактивным карточкам */
 @media (hover: none) {
-  .pb-card:hover { transform: none; box-shadow: none; }
   .mcard:hover .icon-box, .role:hover .icon-box { transform: none; }
   .mcard:hover, .role:hover { background: var(--c1-5); }
 }

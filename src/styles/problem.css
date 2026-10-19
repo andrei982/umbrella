@@ -1,113 +1,105 @@
 /* ==========================================================================
-   «01 — Проблема»: бенто из четырёх карточек с мини-сценами хаоса
-   Сцены оживают, когда карточка появляется на экране (.is-in ставит main.ts);
-   при prefers-reduced-motion всё видно сразу и без зацикленных анимаций.
+   «01 — Проблема»: «хаос → порядок»
+   Слева — список проблем, справа — тёмная сцена с обрывками чатов и таблиц.
+   problem-motion.ts ставит .is-live и data-step (0–3 — активная проблема, 4 — обрывки собрались в знак X).
+   Без JS и при prefers-reduced-motion — статичный разброс обрывков, знак скрыт.
    ========================================================================== */
-.pb { display: grid; gap: 16px; grid-template-columns: 1fr; }
-@media (min-width: 768px) { .pb { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; } }
-@media (min-width: 1100px) {
-  .pb { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
-  .pb-card--chat { grid-column: span 7; }
-  .pb-card--sheet { grid-column: span 5; }
-  .pb-card--ent { grid-column: span 5; }
-  .pb-card--people { grid-column: span 7; }
+.chaos { display: grid; gap: 24px; }
+@media (min-width: 1024px) {
+  .chaos { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 4vw, 64px); align-items: center; }
 }
 
-.pb-card {
-  position: relative; overflow: hidden; isolation: isolate;
-  display: flex; flex-direction: column;
-  background: var(--c5); color: var(--c1);
-  border-radius: var(--r-card, 28px);
-  transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out);
-}
-@media (hover: hover) { .pb-card:hover { transform: translateY(-6px); box-shadow: 0 28px 60px rgba(0, 0, 0, .1); } }
-.pb-card--dark { background: var(--c1); color: var(--c5); }
-
-.pb-scene {
-  position: relative; min-height: clamp(230px, 18vw + 120px, 300px); padding: 24px 0;
-  margin: 12px 12px 0; border-radius: calc(var(--r-card, 28px) - 8px);
-  background: var(--c1-5); overflow: hidden;
-  display: grid; place-items: center;
-}
-.pb-card--dark .pb-scene { background: #0b0b0b; border: 1px solid var(--ln-2); }
-
-.pb-card__text { padding: clamp(20px, 2vw, 32px); padding-top: 22px; display: grid; gap: 10px; }
-.pb-card__num {
-  justify-self: start; font-size: 12px; font-weight: 500; letter-spacing: .06em;
+/* ---------- список проблем ---------- */
+.chaos__list { list-style: none; margin: 0; padding: 0; display: grid; }
+.chaos__item { display: grid; grid-template-columns: auto 1fr; gap: 16px; padding: 22px 0; border-top: 1px solid var(--c1-20); transition: opacity .5s var(--ease-out); }
+.chaos__item:last-child { border-bottom: 1px solid var(--c1-20); }
+.chaos__num {
+  align-self: start; margin-top: 3px; min-width: 40px; text-align: center;
+  font-size: 12px; font-weight: 500; letter-spacing: .06em; font-variant-numeric: tabular-nums;
   padding: 4px 10px; border-radius: 999px; border: 1px solid var(--c1-20); color: var(--ink-3);
+  transition: background .5s, color .5s, border-color .5s;
 }
-.pb-card--dark .pb-card__num { border-color: var(--ln-4); color: var(--dk-3); }
-.pb-card h3 { font-size: clamp(22px, 1vw + 16px, 30px); line-height: 1.12; letter-spacing: -0.03em; font-weight: 500; text-wrap: balance; }
-.pb-card p { font-size: clamp(15px, .2vw + 14px, 17px); line-height: 1.5; color: var(--ink-2); max-width: 34em; }
-.pb-card--dark p { color: var(--dk-3); }
+.chaos__body { display: grid; gap: 6px; }
+.chaos__item h3 { font-size: clamp(20px, .5vw + 17px, 24px); line-height: 1.2; letter-spacing: -0.02em; font-weight: 500; text-wrap: balance; }
+.chaos__item p { font-size: clamp(15px, .2vw + 14px, 16px); line-height: 1.5; color: var(--ink-2); max-width: 34em; }
+
+/* активная проблема — остальные притушены; в конце все «решены» */
+.chaos.is-live[data-step] .chaos__item { opacity: .32; }
+.chaos.is-live[data-step="0"] .chaos__item:nth-child(1),
+.chaos.is-live[data-step="1"] .chaos__item:nth-child(2),
+.chaos.is-live[data-step="2"] .chaos__item:nth-child(3),
+.chaos.is-live[data-step="3"] .chaos__item:nth-child(4),
+.chaos.is-live[data-step="4"] .chaos__item { opacity: 1; }
+.chaos.is-live[data-step="0"] .chaos__item:nth-child(1) .chaos__num,
+.chaos.is-live[data-step="1"] .chaos__item:nth-child(2) .chaos__num,
+.chaos.is-live[data-step="2"] .chaos__item:nth-child(3) .chaos__num,
+.chaos.is-live[data-step="3"] .chaos__item:nth-child(4) .chaos__num { background: var(--c1); border-color: var(--c1); color: var(--c5); }
+.chaos.is-live[data-step="4"] .chaos__num { background: var(--c2); border-color: var(--c2); color: var(--c1); }
+
+/* ---------- сцена ---------- */
+.chaos__stage {
+  position: relative; overflow: hidden; isolation: isolate;
+  height: clamp(380px, 96vw, 480px);
+  background: #0b0b0b; border: 1px solid var(--ln-2); border-radius: var(--r-media, 32px);
+}
+@media (min-width: 1024px) { .chaos__stage { height: clamp(460px, calc(100vh - 220px), 620px); } }
+
+.frag { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); max-width: 66%; z-index: 1; }
+/* x% и от сцены, и от плашки — плашка всегда внутри; при .is-live позицию держит GSAP */
+.chaos:not(.is-live) .frag { transform: translate(calc(var(--x) * -1%), -50%) rotate(var(--r)); }
+.frag__in {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%;
+  font-size: 13px; line-height: 1.2; font-weight: 500; white-space: nowrap; color: var(--dk-2);
+  background: #161616; border: 1px solid var(--ln-3); border-radius: 999px; padding: 9px 14px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .45);
+  transition: opacity .5s var(--ease-out), border-color .5s, scale .5s var(--ease-out);
+}
+.frag__t { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.frag__in .icon { color: var(--c2); flex: none; }
+.frag--msg { background: #1c1c1c; color: var(--c5); border-radius: 16px 16px 16px 4px; }
+.frag--file { border-radius: 12px; }
+.frag__file { width: 20px; height: 20px; border-radius: 5px; background: #1f7a4d; color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; flex: none; }
+.frag__file--pdf { background: #3A3A3A; }
+.frag--badge { width: 38px; height: 38px; padding: 0; justify-content: center; border: 0; background: #F29D1F; color: var(--c1); font-weight: 600; }
+.frag--err { font-size: clamp(18px, 1vw + 12px, 24px); letter-spacing: -0.02em; color: #F29D1F; background: rgba(242, 157, 31, .08); border-color: rgba(242, 157, 31, .35); border-radius: 12px; padding: 8px 14px; }
+.frag--warn { color: #F2B65A; }
+
+.chaos.is-float .frag__in { animation: floaty 5s ease-in-out infinite; animation-delay: calc(var(--k) * -.7s); }
+
+/* обрывки текущей проблемы — ярче, остальные уходят в тень */
+.chaos.is-live[data-step] .frag__in { opacity: .22; }
+.chaos.is-live[data-step="0"] .frag[data-p="0"] .frag__in,
+.chaos.is-live[data-step="1"] .frag[data-p="1"] .frag__in,
+.chaos.is-live[data-step="2"] .frag[data-p="2"] .frag__in,
+.chaos.is-live[data-step="3"] .frag[data-p="3"] .frag__in { opacity: 1; scale: 1.06; border-color: var(--ln-4); }
+.chaos.is-live[data-step="4"] .frag__in { opacity: 1; }
 
 /* статус «ждёт» — цвета из палитры статусов */
 .pulse { width: 8px; height: 8px; border-radius: 50%; background: #F29D1F; flex: none; position: relative; }
-.pulse::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid #F29D1F; opacity: 0; }
-.is-in .pulse::after { animation: pb-ping 1.8s ease-out infinite; }
+.pulse::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid #F29D1F; opacity: 0; animation: pb-ping 1.8s ease-out infinite; }
 @keyframes pb-ping { 0% { transform: scale(.4); opacity: .8; } 100% { transform: scale(1.6); opacity: 0; } }
 
-/* ---------- 01 · чат: вопрос без ответа ---------- */
-.chat { width: min(380px, 86%); background: var(--c5); border-radius: 18px; box-shadow: 0 24px 64px rgba(0, 0, 0, .1); overflow: hidden; }
-.chat__bar { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--c4); font-size: 13px; font-weight: 500; }
-.chat__ava { width: 28px; height: 28px; border-radius: 8px; background: var(--c1); color: var(--c2); display: grid; place-items: center; flex: none; }
-.chat__app { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.chat__unread { background: #F29D1F; color: var(--c1); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
-.chat__msg { margin: 18px 14px 14px; justify-self: start; width: fit-content; max-width: calc(100% - 28px); background: var(--c1-5); padding: 10px 14px; border-radius: 16px 16px 16px 4px; font-size: 15px; line-height: 1.35; }
-.chat__status { display: flex; align-items: center; gap: 10px; margin: 0 14px 14px; padding: 9px 12px; border-radius: 12px; background: #FFF4E0; color: #8A4B00; font-size: 13px; font-weight: 500; }
-
-/* ---------- 02 · таблица: одна битая цифра ---------- */
-.sheet { width: min(320px, 82%); background: #161616; border: 1px solid var(--ln-3); border-radius: 18px; padding: 16px 18px 18px; }
-.sheet__file { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--dk-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sheet__xls { width: 20px; height: 20px; border-radius: 5px; background: #1f7a4d; color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; flex: none; }
-.sheet__label { margin-top: 22px; font-size: 13px; color: var(--dk-4); }
-.sheet__value { margin-top: 4px; font-size: clamp(34px, 1.6vw + 24px, 46px); line-height: 1.05; font-weight: 500; letter-spacing: -0.03em; color: #F29D1F; }
-.is-in .sheet__value { animation: pb-flicker 2.4s ease-in-out infinite 1s; }
-@keyframes pb-flicker { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
-.sheet__stale { display: flex; align-items: center; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--ln-2); font-size: 12px; color: #F2B65A; }
-
-/* ---------- 03 · юрлица: у каждого свой путь, разное число шагов ---------- */
-.ent { width: min(340px, 86%); display: grid; gap: 18px; }
-.ent__row { display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 14px; }
-.ent__name { font-size: 13px; color: var(--dk-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ent__route { position: relative; display: flex; gap: clamp(14px, 5vw - 4px, 26px); width: fit-content; --dot: var(--c2); }
-.ent__route::before { content: ''; position: absolute; left: 5px; right: 5px; top: 50%; border-top: 1px dashed var(--ln-4); }
-.ent__route i { position: relative; width: 11px; height: 11px; border-radius: 50%; background: var(--dot); box-shadow: 0 0 0 4px #0b0b0b; }
-.ent__row:nth-child(2) .ent__route { --dot: #F29D1F; }
-.ent__row:nth-child(3) .ent__route { --dot: #8C8C8C; }
-.ent__note { margin-top: 6px; justify-self: start; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--dk-2); padding: 6px 12px 6px 6px; border-radius: 999px; border: 1px dashed var(--ln-4); }
-.ent__note span { width: 22px; height: 22px; border-radius: 50%; background: #F29D1F; color: var(--c1); display: grid; place-items: center; font-weight: 700; }
-
-/* ---------- 04 · ответ размазан по сервисам ---------- */
-.orbit { width: min(420px, 90%); display: flex; flex-direction: column; align-items: center; gap: 20px; }
-.orbit__apps { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-.orbit__app { font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--ink-2); background: var(--c5); border: 1px solid var(--c4); border-radius: 999px; padding: 7px 14px; }
-.orbit__q {
-  background: var(--c1); color: var(--c5); font-size: clamp(15px, .4vw + 13px, 18px); font-weight: 500;
-  padding: 12px 14px 12px 20px; border-radius: 999px; white-space: nowrap; box-shadow: 0 18px 40px rgba(0, 0, 0, .16);
-  display: inline-flex; align-items: center;
+/* ---------- знак X, в который всё собирается ---------- */
+.chaos__mark {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%; z-index: 2;
+  display: grid; justify-items: center; gap: 16px; opacity: 0; pointer-events: none;
 }
-.orbit__q::after { content: '?'; display: inline-grid; place-items: center; width: 24px; height: 24px; margin-left: 12px; border-radius: 50%; background: var(--c2); color: var(--c1); font-weight: 700; font-size: 13px; }
+.chaos__mark img { position: relative; width: clamp(84px, 6vw + 40px, 124px); height: auto; }
+.chaos__glow { position: absolute; left: 50%; top: 40%; width: 340px; height: 340px; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(34, 242, 207, .32), rgba(34, 242, 207, 0) 65%); }
+.chaos__order { position: relative; font-size: 15px; font-weight: 500; color: var(--c5); letter-spacing: -0.01em; white-space: nowrap; }
 
-/* ---------- появление сцен (когда карточка в экране) ---------- */
-@media (prefers-reduced-motion: no-preference) {
-  .js .pb-card:not(.is-in) .chat__msg, .js .pb-card:not(.is-in) .chat__status { opacity: 0; transform: translateY(10px); }
-  .js .pb-card .chat__msg { transition: opacity .45s var(--ease-out), transform .5s var(--ease-spring); transition-delay: .4s; }
-  .js .pb-card .chat__status { transition: opacity .4s, transform .4s var(--ease-out); transition-delay: 1s; }
-
-  .js .pb-card:not(.is-in) .sheet__value { opacity: 0; transform: translateY(8px); }
-  .js .pb-card .sheet__value { transition: opacity .5s, transform .6s var(--ease-out); transition-delay: .4s; }
-
-  .js .pb-card:not(.is-in) .ent__route i { opacity: 0; transform: scale(.3); }
-  .js .pb-card .ent__route i { transition: opacity .3s, transform .45s var(--ease-spring); transition-delay: calc(.3s + var(--c, 0) * .2s + var(--k) * .08s); }
-
-  .js .pb-card:not(.is-in) .orbit__app { opacity: 0; transform: translateY(8px); }
-  .js .pb-card .orbit__app { transition: opacity .4s, transform .5s var(--ease-out); transition-delay: calc(.3s + var(--k) * .1s); }
-  .js .pb-card:not(.is-in) .orbit__q { opacity: 0; transform: scale(.85); }
-  .js .pb-card .orbit__q { transition: transform .6s var(--ease-spring) .8s, opacity .4s .8s; }
+@media (max-width: 767.98px) {
+  .frag__in { font-size: 11.5px; padding: 7px 11px; gap: 6px; }
+  .frag--badge { width: 32px; height: 32px; padding: 0; }
+  .frag--err { padding: 6px 11px; }
+  .frag__file { width: 17px; height: 17px; font-size: 10px; }
+  .frag { max-width: 84%; }
+}
+@media (max-width: 359.98px) {
+  .frag__in { font-size: 10.5px; padding: 6px 9px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pulse::after, .sheet__value { animation: none !important; }
+  .pulse::after, .frag__in { animation: none !important; }
 }
 
 /* ---------- переход к решению ---------- */
@@ -126,10 +118,4 @@
 @media (hover: hover) {
   .pb-cta:hover { transform: translateY(-3px); box-shadow: 0 20px 50px rgba(34, 242, 207, .3); }
   .pb-cta:hover .pb-cta__link .icon { transform: translateX(4px); }
-}
-
-@media (max-width: 767.98px) {
-  .pb-scene { min-height: 0; padding: 22px 0; margin: 8px 8px 0; }
-  .chat { width: 90%; }
-  .orbit__app { font-size: 12px; padding: 6px 12px; }
 }
